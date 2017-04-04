@@ -4,8 +4,8 @@ import numpy as np
 import sys
 import os
 import cntk as C
-from cntk import Trainer, learning_rate_schedule, UnitType
-from cntk.learner import sgd
+from cntk import Trainer, learning_rate_schedule, momentum_schedule, UnitType
+from cntk.learner import sgd, fsadagrad
 from cntk.initializer import glorot_uniform
 from cntk.layers import default_options, Input, Dense
 
@@ -53,13 +53,15 @@ z = linear_layer(h2, num_classes)
 
 loss = C.cross_entropy_with_softmax(z, label)
 error = C.classification_error(z, label)
-learning_rate = 0.5
+learning_rate = 0.2
+momentum = 0.9
 lr_schedule = learning_rate_schedule(learning_rate, UnitType.minibatch)
-learner = sgd(z.parameters, lr_schedule)
+m_schedule = momentum_schedule(momentum)
+learner = fsadagrad(z.parameters, lr_schedule, m_schedule)
 trainer = Trainer(z, (loss, error), [learner])
 
-minibatch_size = 25
-sample_size = 20000
+minibatch_size = 50
+sample_size = 80000
 num_minibatches = sample_size / minibatch_size
 
 for i in range(int(num_minibatches)):
