@@ -45,13 +45,13 @@ def load_label(src, cimg):
             res = np.fromstring(gz.read(cimg), dtype = np.uint8)
     finally:
         os.remove(gzfname)
-    return res.reshape((cimg, 1))
+    return [e == range(10) for e in res]
 
 def try_download(data_src, label_src, cimg):
     data = load_data(data_src, cimg)
     label = load_label(label_src, cimg)
     return data, label
-    
+
 train_features_url = 'http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz'
 train_labels_url = 'http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz'
 num_train_samples = 60000
